@@ -1,31 +1,42 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class PlayerHealth : MonoBehaviour
 {
-    [Header("Health Settings")]
-    [SerializeField] private int maxHealth = 5;
+    public HealthBarUI healthBarUI;
+    public int maxHealth = 5;
     private int currentHealth;
-    private bool isDead = false;
-
     private Animator animator;
 
-    // ✅ Thuộc tính public để các script khác truy cập
-    public bool IsDead => isDead;
+    public bool IsDead { get; private set; } = false;
+    public bool IsBlocking { get; set; } = false; // được set từ PlayerBlock
+    private bool isInvincible = false;
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         currentHealth = maxHealth;
+        healthBarUI.UpdateHealth(currentHealth, maxHealth);
     }
 
     public void TakeDamage(int damage)
     {
-        if (isDead) return;
+        if (IsDead || isInvincible) return;
+
+        if (IsBlocking)
+        {
+            //GetComponent<PlayerBlock>()?.TriggerBlock(); 
+            Debug.Log("Đỡ đòn – không mất máu");
+            return; // không mất máu
+        }
 
         currentHealth -= damage;
-        animator?.SetTrigger("Hurt");
+        currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
+        healthBarUI.UpdateHealth(currentHealth, maxHealth);
 
-        Debug.Log($"Player bị thương: -{damage} HP, còn lại: {currentHealth} HP");
+        Debug.Log("Player bị mất máu! Máu còn lại: " + currentHealth);
+        animator.SetTrigger("Hurt");
+        StartCoroutine(InvincibilityFrames(0.5f));
 
         if (currentHealth <= 0)
         {
@@ -33,13 +44,18 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    public void Die()
+    private IEnumerator InvincibilityFrames(float duration)
     {
-        if (isDead) return;
+        isInvincible = true;
+        yield return new WaitForSeconds(duration);
+        isInvincible = false;
+    }
 
-        isDead = true;
-        animator?.SetTrigger("Die");
-        Debug.Log("Player đã chết.");
-        // Thêm logic xử lý khi chết tại đây (tắt điều khiển, animation, v.v.)
+    private void Die()
+    {
+        IsDead = true;
+        animator.SetTrigger("Die");
+        Debug.Log("Player đã chết!");
+        // Tuỳ chọn: vô hiệu hóa điều khiển hoặc collider ở đây
     }
 }

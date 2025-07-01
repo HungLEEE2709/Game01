@@ -1,8 +1,15 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
+    [Header("Combo Settings")]
     [SerializeField] private float comboResetTime = 1.0f;
+
+    [Header("Attack Settings")]
+    [SerializeField] private Transform attackPoint;
+    [SerializeField] private float attackRange = 1f;
+    [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private int damage = 1;
 
     private Animator animator;
     private Rigidbody2D rb;
@@ -13,7 +20,6 @@ public class PlayerAttack : MonoBehaviour
 
     public bool IsAttacking => isAttacking;
     public int CurrentAttack => currentAttack;
-
 
     private void Awake()
     {
@@ -52,9 +58,30 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-
-    public void EndAttack()
+    public void EndAttack() // Gọi từ Animation Event cuối mỗi đòn
     {
         isAttacking = false;
+    }
+
+    public void DealDamage() // Gọi từ Animation Event ở frame ra đòn
+    {
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
+
+        foreach (Collider2D enemy in hitEnemies)
+        {
+            if (enemy.TryGetComponent(out PatrolEnemy patrolEnemy))
+            {
+                patrolEnemy.TakeDamage(damage);
+                Debug.Log("Đánh trúng enemy!");
+            }
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (attackPoint == null) return;
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
     }
 }

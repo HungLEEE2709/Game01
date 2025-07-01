@@ -22,6 +22,7 @@ public class PatrolEnemy : MonoBehaviour
 
     private float cooldownTimer;
     private Animator animator;
+    private bool isAttacking = false;
 
     private void Start()
     {
@@ -51,26 +52,32 @@ public class PatrolEnemy : MonoBehaviour
                 Flip();
             }
 
-            if (cooldownTimer <= 0f)
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+            // ✅ CHỈ attack nếu không đang attack và cooldown xong
+            if (!isAttacking && cooldownTimer <= 0f &&
+                !stateInfo.IsName("Attack1") && !stateInfo.IsName("Attack2"))
             {
                 Attack();
-                cooldownTimer = attackCooldown;
             }
-            else
+            else if (canMove && !isAttacking)
             {
-                if (canMove)
-                {
-                    Vector2 direction = (player.position - transform.position).normalized;
-                    transform.Translate(new Vector2(direction.x, 0f) * moveSpeed * Time.deltaTime);
-                }
-                ResetAttack();
+                MoveTowardsPlayer();
             }
         }
         else
         {
-            ResetAttack();
             Patrol();
         }
+
+        animator.SetBool("isMoving", canMove && IsMoving());
+    }
+
+
+    private void MoveTowardsPlayer()
+    {
+        Vector2 direction = (player.position - transform.position).normalized;
+        transform.Translate(new Vector2(direction.x, 0f) * moveSpeed * Time.deltaTime);
     }
 
     private void Patrol()
@@ -86,6 +93,8 @@ public class PatrolEnemy : MonoBehaviour
         if (isDead) return;
 
         currentHealth -= damage;
+
+        canMove = false; 
         animator.SetTrigger("Hurt");
 
         if (currentHealth <= 0)
@@ -94,27 +103,44 @@ public class PatrolEnemy : MonoBehaviour
         }
     }
 
-    private void Attack()
+    private bool IsMoving()
     {
-        ResetAttack();
-
-        bool useAttack1 = Random.Range(0, 2) == 0;
-
-        if (useAttack1)
+        if (player != null && Vector2.Distance(transform.position, player.position) <= detectRange)
         {
-            animator.SetBool("Attack1", true);
-            animator.SetBool("Attack2", false);
+            return true;
         }
-        else
-        {
-            animator.SetBool("Attack1", false);
-            animator.SetBool("Attack2", true);
-        }
-
-        Debug.Log("Enemy attacks: " + (useAttack1 ? "Attack1" : "Attack2"));
+        return true;
     }
 
-    public void DealDamage() // Gọi từ Animation Event
+    private void Attack()
+    {
+        if (isAttacking) return;
+
+        // Kiểm tra tránh spam khi animation chưa kết thúc
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        if (stateInfo.IsName("Attack1") || stateInfo.IsName("Attack2")) return;
+
+        canMove = false;
+        isAttacking = true;
+
+        bool useAttack1 = Random.Range(0, 2) == 0;
+        if (useAttack1)
+            animator.SetTrigger("Attack1");
+        else
+            animator.SetTrigger("Attack2");
+
+        Debug.Log("Enemy bắt đầu tấn công: " + (useAttack1 ? "Attack1" : "Attack2"));
+    }
+
+    public void EndAttack()
+    {
+        Debug.Log("Enemy kết thúc đòn đánh");
+        canMove = true;
+        isAttacking = false;
+        cooldownTimer = attackCooldown;
+    }
+
+    public void DealDamage() 
     {
         if (isDead || player == null) return;
 
@@ -130,51 +156,42 @@ public class PatrolEnemy : MonoBehaviour
         }
     }
 
-    private void ResetAttack()
-    {
-        animator.SetBool("Attack1", false);
-        animator.SetBool("Attack2", false);
-    }
-
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("EdgeStop"))
         {
-            StartCoroutine(PauseAndFlip());
+            Flip();
+            StartCoroutine(PauseBeforeContinue());
         }
     }
 
-    private IEnumerator PauseAndFlip()
+    private IEnumerator PauseBeforeContinue()
     {
+        bool wasMoving = canMove;
         canMove = false;
-
-        if (animator != null)
-            animator.SetBool("Idle", true);
 
         yield return new WaitForSeconds(1f);
 
-        if (animator != null)
-            animator.SetBool("Idle", false);
-
-        Flip();
-
-        canMove = true;
+        canMove = wasMoving;
     }
 
     private void Flip()
     {
-        facingLeft = !facingLeft;
 
+        facingLeft = !facingLeft;
         Vector3 scale = transform.localScale;
         scale.x *= -1;
         transform.localScale = scale;
+    }
+    public void EndHurt()
+    {
+        canMove = true;
     }
 
     private void Die()
     {
         isDead = true;
         canMove = false;
-
         animator.SetTrigger("Die");
 
         Collider2D col = GetComponent<Collider2D>();

@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     private bool isRolling = false;
     private float rollTimer = 0f;
 
-    // Thêm các module con
+    // Modules
     private PlayerAttack playerAttack;
     private PlayerBlock playerBlock;
     private PlayerHealth playerHealth;
@@ -35,22 +35,26 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
-
         if (playerHealth.IsDead) return;
 
-        playerBlock.HandleBlock();
-        HandleMovement();
-        HandleJump();
-        HandleRoll();
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
+
+        playerBlock.HandleBlock(); // ✅ Block luôn xử lý đầu tiên
+
+        if (!playerBlock.IsBlocking && !isRolling && !playerAttack.IsAttacking)
+        {
+            HandleMovement();
+            HandleJump();
+            HandleRoll();
+        }
+
         playerAttack.HandleAttack();
+
         UpdateAnimation();
     }
 
     private void HandleMovement()
     {
-        if (isRolling || playerAttack.IsAttacking || playerBlock.IsBlocking || playerHealth.IsDead) return;
-
         float moveInput = Input.GetAxisRaw("Horizontal");
         rb.linearVelocity = new Vector2(moveInput * m_Speed, rb.linearVelocity.y);
 
@@ -62,7 +66,7 @@ public class PlayerController : MonoBehaviour
 
     private void HandleJump()
     {
-        if (Input.GetButtonDown("Jump") && isGrounded && !isRolling)
+        if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             animator.SetTrigger("Jump");
@@ -75,8 +79,8 @@ public class PlayerController : MonoBehaviour
         {
             rollTimer -= Time.deltaTime;
 
-            float rollDirection = Mathf.Sign(transform.localScale.x);
-            rb.linearVelocity = new Vector2(rollDirection * rollForce, rb.linearVelocity.y);
+            float rollDir = Mathf.Sign(transform.localScale.x);
+            rb.linearVelocity = new Vector2(rollDir * rollForce, rb.linearVelocity.y);
 
             if (rollTimer <= 0f)
             {
@@ -84,16 +88,17 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("Roll", false);
                 rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
             }
+
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftShift) && isGrounded && !playerAttack.IsAttacking && !playerHealth.IsDead)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && isGrounded && !playerAttack.IsAttacking && !playerBlock.IsBlocking)
         {
             isRolling = true;
             rollTimer = rollDuration;
             animator.SetBool("Roll", true);
-            float rollDirection = Mathf.Sign(transform.localScale.x);
-            rb.linearVelocity = new Vector2(rollDirection * rollForce, rb.linearVelocity.y);
+            float rollDir = Mathf.Sign(transform.localScale.x);
+            rb.linearVelocity = new Vector2(rollDir * rollForce, rb.linearVelocity.y);
         }
     }
 
@@ -102,5 +107,11 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("Grounded", isGrounded);
         animator.SetFloat("AirSpeed", rb.linearVelocity.y);
         animator.SetBool("isRunning", Mathf.Abs(rb.linearVelocity.x) > 0.1f);
+
+        // Idle vs Block logic
+        if (!playerBlock.IsBlocking)
+        {
+            animator.SetBool("Idle", isGrounded && Mathf.Abs(rb.linearVelocity.x) < 0.1f);
+        }
     }
 }

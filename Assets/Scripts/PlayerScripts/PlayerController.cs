@@ -84,9 +84,7 @@ public class PlayerController : MonoBehaviour
 
             if (rollTimer <= 0f)
             {
-                isRolling = false;
-                animator.SetBool("Roll", false);
-                rb.linearVelocity = new Vector2(0, rb.linearVelocity.y);
+                isRolling = false; 
             }
 
             return;
@@ -96,10 +94,15 @@ public class PlayerController : MonoBehaviour
         {
             isRolling = true;
             rollTimer = rollDuration;
-            animator.SetBool("Roll", true);
+            animator.SetTrigger("Roll");
             float rollDir = Mathf.Sign(transform.localScale.x);
             rb.linearVelocity = new Vector2(rollDir * rollForce, rb.linearVelocity.y);
         }
+    }
+    public void EndRoll()
+    {
+        isRolling = false;
+        animator.ResetTrigger("Roll");
     }
 
     private void UpdateAnimation()

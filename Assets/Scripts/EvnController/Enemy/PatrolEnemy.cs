@@ -3,8 +3,14 @@ using System.Collections;
 
 public class PatrolEnemy : BaseEnemy
 {
+    private AudioManager audioManager;
+    private void Awake()
+    {
+        audioManager = FindAnyObjectByType<AudioManager>();
+    }
     protected override void Patrol()
     {
+
         if (!canMove || isAttacking || isDead) return;
 
         Vector2 dir = facingLeft ? Vector2.left : Vector2.right;
@@ -13,6 +19,7 @@ public class PatrolEnemy : BaseEnemy
 
     protected override void TryAttack()
     {
+        audioManager.PlayEnemyAttackSound();
         if (isAttacking || isDead || cooldownTimer > 0f) return;
 
         canMove = false;

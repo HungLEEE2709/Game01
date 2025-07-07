@@ -13,6 +13,7 @@ public class PlayerAttack : MonoBehaviour
 
     private Animator animator;
     private Rigidbody2D rb;
+    private AudioManager audioManager;
 
     private int currentAttack = 0;
     private float lastAttackTime = 0f;
@@ -25,6 +26,7 @@ public class PlayerAttack : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        audioManager = FindAnyObjectByType<AudioManager>();
     }
 
     public void HandleAttack()
@@ -33,6 +35,7 @@ public class PlayerAttack : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
+            audioManager.PlayAttackSound();
             float timeSinceLastAttack = Time.time - lastAttackTime;
 
             if (timeSinceLastAttack > comboResetTime)

@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private Animator animator;
+    private AudioManager audioManager;
 
     private bool isRolling = false;
     private float rollTimer = 0f;
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour
         playerAttack = GetComponent<PlayerAttack>();
         playerBlock = GetComponent<PlayerBlock>();
         playerHealth = GetComponent<PlayerHealth>();
+        audioManager = FindAnyObjectByType<AudioManager>();
     }
 
     void Update()
@@ -67,6 +69,7 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
+            audioManager.PlayJumpSound();
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
             animator.SetTrigger("Jump");
         }

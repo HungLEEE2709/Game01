@@ -9,6 +9,7 @@ TagManager:
   - Trap
   - Key
   - EdgeStop
+  - Platform
   layers:
   - Default
   - TransparentFX

@@ -29,7 +29,7 @@ public class PlayerAttack : MonoBehaviour
 
     public void HandleAttack()
     {
-        if (isAttacking) return;
+        if (isAttacking || animator.GetCurrentAnimatorStateInfo(0).IsTag("Hurt")) return;
 
         if (Input.GetMouseButtonDown(0))
         {
@@ -58,20 +58,21 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    public void EndAttack() // Gọi từ Animation Event cuối mỗi đòn
+    public void EndAttack() 
     {
         isAttacking = false;
     }
 
-    public void DealDamage() // Gọi từ Animation Event ở frame ra đòn
+    public void DealDamage()
     {
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint.position, attackRange, enemyLayer);
 
-        foreach (Collider2D enemy in hitEnemies)
+        foreach (Collider2D enemyCollider in hitEnemies)
         {
-            if (enemy.TryGetComponent(out PatrolEnemy patrolEnemy))
+            BaseEnemy enemy = enemyCollider.GetComponent<BaseEnemy>();
+            if (enemy != null)
             {
-                patrolEnemy.TakeDamage(damage);
+                enemy.TakeDamage(damage);
                 Debug.Log("Đánh trúng enemy!");
             }
         }

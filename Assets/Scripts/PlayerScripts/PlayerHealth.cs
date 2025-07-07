@@ -9,7 +9,7 @@ public class PlayerHealth : MonoBehaviour
     private Animator animator;
 
     public bool IsDead { get; private set; } = false;
-    public bool IsBlocking { get; set; } = false; // được set từ PlayerBlock
+    public bool IsBlocking { get; set; } = false;
     private bool isInvincible = false;
 
     private void Awake()
@@ -25,9 +25,8 @@ public class PlayerHealth : MonoBehaviour
 
         if (IsBlocking)
         {
-            //GetComponent<PlayerBlock>()?.TriggerBlock(); 
             Debug.Log("Đỡ đòn – không mất máu");
-            return; // không mất máu
+            return;
         }
 
         currentHealth -= damage;
@@ -35,7 +34,15 @@ public class PlayerHealth : MonoBehaviour
         healthBarUI.UpdateHealth(currentHealth, maxHealth);
 
         Debug.Log("Player bị mất máu! Máu còn lại: " + currentHealth);
+
+        animator.ResetTrigger("Attack1");  
+        animator.ResetTrigger("Attack2");
+        animator.ResetTrigger("Attack3");
+
         animator.SetTrigger("Hurt");
+
+        GetComponent<PlayerAttack>()?.EndAttack();
+
         StartCoroutine(InvincibilityFrames(0.5f));
 
         if (currentHealth <= 0)
@@ -56,6 +63,5 @@ public class PlayerHealth : MonoBehaviour
         IsDead = true;
         animator.SetTrigger("Die");
         Debug.Log("Player đã chết!");
-        // Tuỳ chọn: vô hiệu hóa điều khiển hoặc collider ở đây
     }
 }

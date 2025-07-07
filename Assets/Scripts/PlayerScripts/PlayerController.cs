@@ -19,7 +19,6 @@ public class PlayerController : MonoBehaviour
     private bool isRolling = false;
     private float rollTimer = 0f;
 
-    // Modules
     private PlayerAttack playerAttack;
     private PlayerBlock playerBlock;
     private PlayerHealth playerHealth;
@@ -39,7 +38,7 @@ public class PlayerController : MonoBehaviour
 
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
 
-        playerBlock.HandleBlock(); // ✅ Block luôn xử lý đầu tiên
+        playerBlock.HandleBlock(); 
 
         if (!playerBlock.IsBlocking && !isRolling && !playerAttack.IsAttacking)
         {
@@ -111,7 +110,6 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat("AirSpeed", rb.linearVelocity.y);
         animator.SetBool("isRunning", Mathf.Abs(rb.linearVelocity.x) > 0.1f);
 
-        // Idle vs Block logic
         if (!playerBlock.IsBlocking)
         {
             animator.SetBool("Idle", isGrounded && Mathf.Abs(rb.linearVelocity.x) < 0.1f);

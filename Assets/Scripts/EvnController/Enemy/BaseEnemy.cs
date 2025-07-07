@@ -78,7 +78,7 @@ public abstract class BaseEnemy : MonoBehaviour
         transform.Translate(new Vector2(direction.x, 0f) * moveSpeed * Time.deltaTime);
     }
 
-    protected abstract void TryAttack(); // Cho phép class con triển khai theo cách riêng
+    protected abstract void TryAttack(); 
 
     protected virtual void Patrol() { }
 

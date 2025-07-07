@@ -5,7 +5,7 @@ public class PatrolEnemy : BaseEnemy
 {
     protected override void Patrol()
     {
-        if (!canMove) return;
+        if (!canMove || isAttacking || isDead) return;
 
         Vector2 dir = facingLeft ? Vector2.left : Vector2.right;
         transform.Translate(dir * moveSpeed * Time.deltaTime);
@@ -13,9 +13,7 @@ public class PatrolEnemy : BaseEnemy
 
     protected override void TryAttack()
     {
-        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-
-        if (stateInfo.IsName("Attack1") || stateInfo.IsName("Attack2")) return;
+        if (isAttacking || isDead || cooldownTimer > 0f) return;
 
         canMove = false;
         isAttacking = true;
@@ -27,11 +25,32 @@ public class PatrolEnemy : BaseEnemy
             animator.SetTrigger("Attack2");
     }
 
-    public void EndAttack()
+    public void EndAttack() 
     {
         canMove = true;
         isAttacking = false;
         cooldownTimer = attackCooldown;
+    }
+
+    public override void TakeDamage(int dmg = 1)
+    {
+        if (isDead) return;
+
+        base.TakeDamage(dmg);
+
+        isAttacking = false;
+        canMove = false;
+
+        animator.SetTrigger("Hurt");
+    }
+
+    public void EndHurt() 
+    {
+        if (!isDead)
+        {
+            canMove = true;
+            isAttacking = false;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)

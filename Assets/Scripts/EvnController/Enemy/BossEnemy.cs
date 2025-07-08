@@ -35,10 +35,6 @@ public class BossEnemy : BaseEnemy
             {
                 TryAttack();
             }
-            else if (canMove && !isAttacking)
-            {
-                MoveToPlayer();
-            }
         }
         else
         {
@@ -87,6 +83,7 @@ public class BossEnemy : BaseEnemy
             Rigidbody2D rb = spell.GetComponent<Rigidbody2D>();
             rb.linearVelocity = dir * spellSpeed;
         }
+        Debug.Log("Fireball/Iceball được bắn!");
     }
 
     public void EndAttack()

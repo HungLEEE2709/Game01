@@ -45,5 +45,5 @@ public abstract class BaseProjectile : MonoBehaviour
         }
     }
 
-    protected abstract void OnHit(); // Sẽ được override ở từng loại quả cầu
+    protected abstract void OnHit(); 
 }

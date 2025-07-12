@@ -63,5 +63,6 @@ public class PlayerHealth : MonoBehaviour
         IsDead = true;
         animator.SetTrigger("Die");
         Debug.Log("Player đã chết!");
+        GameManager.Instance?.GameOver();
     }
 }

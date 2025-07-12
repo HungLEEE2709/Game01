@@ -8,6 +8,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioClip musicClip;
     [SerializeField] private AudioClip jumpClip;
     [SerializeField] private AudioClip attackClip;
+    [SerializeField] private AudioClip deathClip;
     [SerializeField] private AudioClip enemyAttackClip;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,6 +26,10 @@ public class AudioManager : MonoBehaviour
         musicSource.clip = musicClip;
         musicSource.Play();
     }
+    public void StopMusic()
+    {
+        musicSource.Stop();
+    }
     public void PlayJumpSound()
     {
         effectAudioSource.PlayOneShot(jumpClip);
@@ -35,6 +40,10 @@ public class AudioManager : MonoBehaviour
     }
     public void PlayEnemyAttackSound()
     {
-        effectAudioSource?.PlayOneShot(enemyAttackClip);
+        effectAudioSource.PlayOneShot(enemyAttackClip);
+    }
+    public void PlayDeathSound()
+    {
+        effectAudioSource.PlayOneShot(deathClip);
     }
 }

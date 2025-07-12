@@ -9,6 +9,7 @@ public class PauseMenu : MonoBehaviour
 
     private void Update()
     {
+            
         // Nhấn Escape để bật/tắt pause
         if (Input.GetKeyDown(KeyCode.Escape))
         {

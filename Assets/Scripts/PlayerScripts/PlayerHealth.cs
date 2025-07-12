@@ -71,6 +71,7 @@
 
         animator.SetTrigger("Die");
 
+
         if (audioManager != null)
         {
             audioManager.StopMusic();
@@ -85,5 +86,9 @@
     {
         yield return new WaitForSeconds(1.2f);
         gameManager.GameOver();
+
+        Debug.Log("Player đã chết!");
+        GameManager.Instance?.GameOver();
+
     }
 }

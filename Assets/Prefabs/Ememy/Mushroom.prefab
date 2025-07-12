@@ -182,6 +182,7 @@ MonoBehaviour:
   attackCooldown: 2
   attackRange: 1.5
   damage: 1
+  healthBar: {fileID: 3030734152033710058, guid: 12ff2bfe37820044da81b495f6c2f7ad, type: 3}
   player: {fileID: 0}
 --- !u!95 &4879807208294140673
 Animator:

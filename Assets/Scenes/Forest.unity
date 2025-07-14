@@ -836,10 +836,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: AudioManager
       objectReference: {fileID: 0}
+    - target: {fileID: 1953150615713552546, guid: 8754a07f56b2f06459e3d06e6f7dd5b2, type: 3}
+      propertyPath: m_Volume
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1953150615713552546, guid: 8754a07f56b2f06459e3d06e6f7dd5b2, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 25aebe207059c2e44bb093ab04b16bf0, type: 2}
     - target: {fileID: 3838212034648757101, guid: 8754a07f56b2f06459e3d06e6f7dd5b2, type: 3}
       propertyPath: deathClip
       value: 
       objectReference: {fileID: 8300000, guid: eb7293fee34f6f6449e2f9e1927a3199, type: 3}
+    - target: {fileID: 7175490624483415381, guid: 8754a07f56b2f06459e3d06e6f7dd5b2, type: 3}
+      propertyPath: m_Resource
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e549d02b8aca8a41920a66effb97082, type: 3}
+    - target: {fileID: 7175490624483415381, guid: 8754a07f56b2f06459e3d06e6f7dd5b2, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 4e549d02b8aca8a41920a66effb97082, type: 3}
+    - target: {fileID: 7175490624483415381, guid: 8754a07f56b2f06459e3d06e6f7dd5b2, type: 3}
+      propertyPath: OutputAudioMixerGroup
+      value: 
+      objectReference: {fileID: 24300002, guid: 25aebe207059c2e44bb093ab04b16bf0, type: 2}
     - target: {fileID: 7859785194141873725, guid: 8754a07f56b2f06459e3d06e6f7dd5b2, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -13552,7 +13572,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5901227731929753417, guid: 45dba8e9c7df22240b4bf1ceb69974f7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.821144
+      value: -2.8845062
       objectReference: {fileID: 0}
     - target: {fileID: 5901227731929753417, guid: 45dba8e9c7df22240b4bf1ceb69974f7, type: 3}
       propertyPath: m_LocalPosition.y

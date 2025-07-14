@@ -5,7 +5,7 @@ AssetOrigin:
   productId: 97516
   packageName: 371 Simple Buttons Pack
   packageVersion: 1.0
-  assetPath: Assets/Simple Buttons/Buttons Style 13 (Rounded Gray)/ButtonsStyle13_04.png
+  assetPath: Assets/Art/Sprites/Menu/Simple Buttons/Buttons Style 13 (Rounded Gray)/ButtonsStyle13_04.png
   uploadId: 194640
 TextureImporter:
   internalIDToNameTable: []
@@ -121,7 +121,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []

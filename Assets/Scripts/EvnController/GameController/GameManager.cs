@@ -9,7 +9,9 @@ public class GameManager : MonoBehaviour
     public int playerHealth = 10;
     private int score = 0;
 
+
     [SerializeField] private TextMeshProUGUI scoreText;
+    [SerializeField] private TextMeshProUGUI finalScoreText;
     [SerializeField] private GameObject GameOverUI;
     [SerializeField] private GameObject healthBarUI;
     [SerializeField] private GameObject pauseButton;
@@ -21,8 +23,6 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
-            SceneManager.sceneLoaded += OnSceneLoaded; // Tự động gọi khi qua màn
         }
         else
         {
@@ -33,21 +33,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         UpdateScore();
-        SetupUI();
-    }
-
-    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        // Gán lại các UI nếu bị null sau khi qua màn
-        if (scoreText == null)
-            scoreText = GameObject.Find("Score")?.GetComponent<TextMeshProUGUI>();
-        if (GameOverUI == null)
-            GameOverUI = GameObject.Find("GameOverUI");
-        if (healthBarUI == null)
-            healthBarUI = GameObject.Find("Health");
-        if (pauseButton == null)
-            pauseButton = GameObject.Find("Button");
-
         SetupUI();
     }
 
@@ -83,6 +68,9 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        if (isGameOver)
+            return;
+
         isGameOver = true;
         Time.timeScale = 0;
 
@@ -98,31 +86,20 @@ public class GameManager : MonoBehaviour
         if (GameOverUI != null)
             GameOverUI.SetActive(true);
 
-        Debug.Log("Game Over triggered!");
+        if (finalScoreText != null)
+            finalScoreText.text = "Điểm của bạn: " + score.ToString();
 
-        // Reset điểm khi thua
-        score = 0;
+        Debug.Log("Game Over triggered!");
     }
 
     public void RestarGame()
     {
         Time.timeScale = 1f;
-
-        if (GameOverUI != null)
-            GameOverUI.SetActive(false);
-
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     public void LoadLevel(string sceneName)
     {
-        Time.timeScale = 1f;
         SceneManager.LoadScene(sceneName);
-    }
-
-    private void OnDestroy()
-    {
-        // Xóa listener khi GameManager bị phá hủy (để tránh memory leak)
-        SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 }

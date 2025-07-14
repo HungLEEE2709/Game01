@@ -5,7 +5,7 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject OptionsPanel;
     public void LoadGame()
     {
-        SceneManager.LoadScene("Village");
+        SceneManager.LoadScene("Forest");
     }
     public void ExitGame()
     {

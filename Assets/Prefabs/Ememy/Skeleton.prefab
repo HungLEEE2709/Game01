@@ -145,7 +145,7 @@ Rigidbody2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963707779659861751}
-  m_BodyType: 0
+  m_BodyType: 1
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
@@ -204,5 +204,7 @@ MonoBehaviour:
   attackCooldown: 2
   attackRange: 1.5
   damage: 1
-  healthBar: {fileID: 3030734152033710058, guid: 12ff2bfe37820044da81b495f6c2f7ad, type: 3}
   player: {fileID: 0}
+  coinPrefab: {fileID: 0}
+  minCoinDrop: 1
+  maxCoinDrop: 3

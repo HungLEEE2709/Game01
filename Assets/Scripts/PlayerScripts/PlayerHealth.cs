@@ -20,7 +20,6 @@ public class PlayerHealth : MonoBehaviour
         gameManager = FindAnyObjectByType<GameManager>();
         audioManager = FindAnyObjectByType<AudioManager>();
 
-        // ✅ Lấy HP từ GameManager nếu đã lưu, ngược lại dùng maxHealth
         if (gameManager != null)
         {
             currentHealth = gameManager.playerHealth > 0 ? gameManager.playerHealth : maxHealth;
@@ -30,7 +29,6 @@ public class PlayerHealth : MonoBehaviour
             currentHealth = maxHealth;
         }
 
-        // ✅ Cập nhật thanh máu
         if (healthBarUI != null)
         {
             healthBarUI.UpdateHealth(currentHealth, maxHealth);
@@ -39,14 +37,13 @@ public class PlayerHealth : MonoBehaviour
 
     private void Update()
     {
-        // ✅ Rơi khỏi bản đồ thì chết
+
         if (!IsDead && transform.position.y < -6f)
         {
             Debug.Log("Player rơi xuống vực!");
             Die();
         }
 
-        // ✅ Cập nhật HP mỗi frame vào GameManager để lưu khi chuyển màn
         if (gameManager != null && !IsDead)
         {
             gameManager.playerHealth = currentHealth;
@@ -115,11 +112,6 @@ public class PlayerHealth : MonoBehaviour
         if (gameManager != null)
         {
             gameManager.GameOver();
-            Debug.Log("GameOver được gọi từ PlayerHealth!");
-        }
-        else
-        {
-            Debug.LogError("Không tìm thấy GameManager!");
         }
     }
 }

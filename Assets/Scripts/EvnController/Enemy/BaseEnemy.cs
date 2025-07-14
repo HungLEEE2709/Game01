@@ -122,7 +122,6 @@ public abstract class BaseEnemy : MonoBehaviour
             }
         }
     }
-
     protected virtual void Flip()
     {
         facingLeft = !facingLeft;

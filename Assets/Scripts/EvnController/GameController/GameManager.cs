@@ -2,6 +2,7 @@
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
@@ -22,7 +23,7 @@ public class GameManager : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject); // Xoá bản copy thừa
+            Destroy(gameObject);
             return;
         }
 
@@ -34,6 +35,7 @@ public class GameManager : MonoBehaviour
     {
         InitializeGame();
     }
+
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -46,8 +48,8 @@ public class GameManager : MonoBehaviour
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        AssignUIFromScene();     
-        SetupUI();           
+        AssignUIFromScene();
+        SetupUI();
 
         if (IsFirstLevel())
         {
@@ -57,38 +59,23 @@ public class GameManager : MonoBehaviour
         {
             LoadGameData();
         }
+
         UpdateScore();
-        isGameOver = false;          
+        isGameOver = false;
     }
 
     private void AssignUIFromScene()
     {
         GameObject gameOverCanvas = GameObject.Find("GameOver");
         if (gameOverCanvas == null)
-        {
-            Debug.LogError("❌ Không tìm thấy GameOver (Canvas)");
             return;
-        }
 
-        // Tìm GameOverUI trong các con của GameOver (kể cả bị ẩn)
         gameOverUI = FindChildByName(gameOverCanvas.transform, "GameOverUI")?.gameObject;
-        if (gameOverUI == null)
-        {
-            Debug.LogError("❌ Không tìm thấy GameOverUI trong GameOver");
-        }
 
-        // Tìm FinalScoreText trong GameOverUI
         Transform finalScoreTransform = FindChildByName(gameOverCanvas.transform, "FinalScoreText");
         if (finalScoreTransform != null)
-        {
             finalScoreText = finalScoreTransform.GetComponent<TextMeshProUGUI>();
-        }
-        else
-        {
-            Debug.LogError("❌ Không tìm thấy FinalScoreText trong GameOver");
-        }
 
-        // Tìm ScoreText (không quan trọng nằm ở đâu)
         if (scoreText == null)
             scoreText = GameObject.Find("ScoreText")?.GetComponent<TextMeshProUGUI>();
 
@@ -97,7 +84,7 @@ public class GameManager : MonoBehaviour
 
         if (pauseButton == null)
             pauseButton = GameObject.Find("PauseButton");
-        // Tìm và gán lại sự kiện cho nút Play Again
+
         Transform playAgainTransform = FindChildByName(gameOverUI.transform, "PlayAgain");
         if (playAgainTransform != null)
         {
@@ -105,25 +92,14 @@ public class GameManager : MonoBehaviour
             if (PlayAgain != null)
             {
                 PlayAgain.onClick.RemoveAllListeners();
-                PlayAgain.onClick.AddListener(RestartGame); 
-                Debug.Log("✅ Gán lại nút Play Again");
-            }
-            else
-            {
-                Debug.LogWarning("⚠️ PlayAgainButton không có component Button!");
+                PlayAgain.onClick.AddListener(RestartGame);
             }
         }
-        else
-        {
-            Debug.LogWarning("⚠️ Không tìm thấy PlayAgainButton trong GameOverUI!");
-        }
-
     }
 
-    // Hàm hỗ trợ tìm child theo tên trong cây transform (kể cả object ẩn)
     private Transform FindChildByName(Transform parent, string name)
     {
-        foreach (Transform child in parent.GetComponentsInChildren<Transform>(true)) // true => cả object ẩn
+        foreach (Transform child in parent.GetComponentsInChildren<Transform>(true))
         {
             if (child.name == name)
                 return child;
@@ -137,7 +113,6 @@ public class GameManager : MonoBehaviour
 
         score += points;
         UpdateScore();
-        Debug.Log($"[GameManager] +{points} điểm, Tổng: {score}");
     }
 
     public void GameOver()
@@ -155,7 +130,6 @@ public class GameManager : MonoBehaviour
     {
         ResetGameData();
         Time.timeScale = 1f;
-
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
@@ -174,14 +148,12 @@ public class GameManager : MonoBehaviour
         PlayerPrefs.SetInt("Score", score);
         PlayerPrefs.SetInt("PlayerHealth", playerHealth);
         PlayerPrefs.Save();
-        Debug.Log($"[GameManager] Dữ liệu đã lưu: Score={score}, HP={playerHealth}");
     }
 
     private void LoadGameData()
     {
         score = PlayerPrefs.GetInt("Score", 0);
         playerHealth = PlayerPrefs.GetInt("PlayerHealth", 10);
-        Debug.Log($"[GameManager] Đã load dữ liệu: Score={score}, HP={playerHealth}");
     }
 
     private void ResetGameData()
@@ -189,7 +161,6 @@ public class GameManager : MonoBehaviour
         score = 0;
         playerHealth = 10;
         isGameOver = false;
-
     }
 
     private bool IsFirstLevel()
@@ -207,7 +178,6 @@ public class GameManager : MonoBehaviour
     {
         if (gameOverUI != null)
             gameOverUI.SetActive(false);
-
         ToggleGameplayUI(true);
     }
 

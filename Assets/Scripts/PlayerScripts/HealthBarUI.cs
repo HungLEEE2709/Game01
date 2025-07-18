@@ -10,7 +10,6 @@ public class HealthBarUI : MonoBehaviour
 
     /// <summary>
     /// Cập nhật thanh máu.
-    /// </summary>
     public void UpdateHealth(float currentHealth, float maxHealth)
     {
         if (healthFill != null)

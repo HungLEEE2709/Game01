@@ -10,6 +10,11 @@ TagManager:
   - Key
   - EdgeStop
   - Platform
+  - ScoreText
+  - FinalScoreText
+  - PauseButton
+  - GameOverUI
+  - HealthBarUI
   layers:
   - Default
   - TransparentFX

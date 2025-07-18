@@ -4,7 +4,7 @@ using System.Collections;
 public class PlayerHealth : MonoBehaviour
 {
     public HealthBarUI healthBarUI;
-    public int maxHealth = 5;
+    public int maxHealth = 10;
     private int currentHealth;
     private Animator animator;
     private GameManager gameManager;
@@ -104,14 +104,15 @@ public class PlayerHealth : MonoBehaviour
 
         StartCoroutine(ShowGameOverAfterDelay());
     }
-
     private IEnumerator ShowGameOverAfterDelay()
     {
         yield return new WaitForSeconds(1.2f);
 
-        if (gameManager != null)
-        {
-            gameManager.GameOver();
-        }
+        // Chờ GameManager khởi tạo xong
+        while (GameManager.Instance == null)
+            yield return null;
+
+        GameManager.Instance.GameOver();
     }
+
 }
